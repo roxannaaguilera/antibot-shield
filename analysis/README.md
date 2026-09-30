@@ -56,6 +56,24 @@ La defensa real combina capas: timing + IP + cabeceras + huella del navegador
 + honeypot. El atacante necesita ser perfecto en todo; el defensor solo
 necesita una grieta.
 
+## Adversario de prueba (`adversarial.py`)
+
+Red-teaming defensivo: genera arrays sintéticos y los enfrenta al detector
+para encontrar agujeros antes que un atacante real.
+
+```
+python3 analysis/adversarial.py
+```
+
+| Adversario | Resultado |
+|------------|-----------|
+| `bot_smart` | 0 puntos — imitar la marginal humana basta (ya se sabía) |
+| `bot_replay_jitter` | **0 puntos** — replay + 3 ms de ruido rompe los duplicados exactos |
+| `bot_optimizer` | 0 puntos — la búsqueda aleatoria siempre encuentra parámetros que pasan |
+
+Diagnóstico: con tolerancia ±5 ms el replay con jitter da `dup = 0.75`.
+Lección: los duplicados exactos no bastan; hay que comparar con tolerancia.
+
 ## Uso
 
 ```
