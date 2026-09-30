@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Demo protegida por antibot-shield</title>
+  <style>body{font-family:sans-serif;max-width:640px;margin:2rem auto;padding:0 1rem}</style>
+</head>
+<body>
+  <h1>Página protegida por antibot-shield</h1>
+  <p>Si estás leyendo esto, pasaste las capas 1 a 3 (IP, cabeceras y huella del navegador).</p>
+
+  <h2>Formulario con honeypot (capa 5)</h2>
+  <form method="POST" action="/api/contact">
+    <input name="name" placeholder="Tu nombre" required>
+    <!-- Honeypot: invisible para humanos, irresistible para bots -->
+    <input name="website" style="display:none" tabindex="-1" autocomplete="off">
+    <button>Enviar</button>
+  </form>
+
+  <script>
+    // CAPA 3: recoge la huella del navegador y la envía al servidor
+    fetch('/api/telemetry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        webdriver: navigator.webdriver === true,   // true = navegador automatizado
+        plugins: navigator.plugins ? navigator.plugins.length : 0,
+        languages: navigator.languages || [],
+        hardwareConcurrency: navigator.hardwareConcurrency || 0
+      })
+    });
+  </script>
+</body>
+</html>

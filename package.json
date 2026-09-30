@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"Demo educativa: cómo detectan y bloquean bots las webs, capa por capa","main":"server.js","name":"antibot-shield","scripts":{"start":"node server.js"},"version":"1.0.0"}

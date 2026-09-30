@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Verificación humana</title>
+  <style>body{font-family:sans-serif;max-width:480px;margin:4rem auto;padding:0 1rem;text-align:center}</style>
+</head>
+<body>
+  <h1>Un paso más</h1>
+  <p>Tu puntuación de sospecha está en zona gris. Demuestra que eres humano:</p>
+  <form method="POST" action="/api/challenge">
+    <p>¿Cuánto es <b id="q"></b>?</p>
+    <input type="hidden" name="a" id="a">
+    <input type="hidden" name="b" id="b">
+    <input name="answer" required autocomplete="off">
+    <button>Verificar</button>
+  </form>
+  <script>
+    const a = Math.floor(Math.random() * 20) + 1;
+    const b = Math.floor(Math.random() * 20) + 1;
+    document.getElementById('q').textContent = `${a} + ${b} = ?`;
+    document.getElementById('a').value = a;
+    document.getElementById('b').value = b;
+  </script>
+</body>
+</html>
