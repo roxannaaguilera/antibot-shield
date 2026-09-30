@@ -112,3 +112,14 @@ Esto frena al 95% de los bots baratos. Un atacante serio usa IPs residenciales r
 navegadores reales automatizados con movimientos de ratón simulados y resuelve CAPTCHAs
 con servicios de pago. Contra eso solo hay mitigación, no victoria total: WAF profesional
 (Cloudflare, DataDome), proof-of-work en el cliente y monitorización continua.
+
+## CAPA 6 — timing conductual (nuevo)
+
+`public/collector.js` mide intervalos entre teclas, movimientos de ratón y clics
+y los envía a `POST /api/timing`. `lib/timing.js` extrae rasgos estadísticos
+(CV, burstiness, entropía, duplicados exactos, autocorrelación) y suma puntos
+al score del escudo. Ninguna capa decide sola: un bot que imita la distribución
+humana pasa esta capa, pero cae en el replay o en las demás.
+
+Demo: `python3 analysis/demo.py` simula 5 perfiles (humano, bot ingenuo,
+bot multi-patrón, bot "listo" y replay) y muestra qué detecta la capa.

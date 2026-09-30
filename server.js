@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const { scoreRequest, scoreTelemetry, recordHit, recordTelemetry, decide } = require('./lib/detector');
+const { recordTiming, scoreTiming } = require('./lib/timing');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,12 @@ app.post('/api/telemetry', (req, res) => {
   res.json({ ok: true });
 });
 
+// 1b) Timing conductual (lo envía collector.js desde la página)
+app.post('/api/timing', (req, res) => {
+  recordTiming(clientIp(req), req.body || {});
+  res.json({ ok: true });
+});
+
 // 2) Verificación del reto (pregunta matemática simple)
 app.post('/api/challenge', (req, res) => {
   const { a, b, answer } = req.body || {};
@@ -45,7 +52,11 @@ app.use((req, res, next) => {
   if (verified.has(ip)) return next();
 
   recordHit(ip);
-  const { score, signals } = scoreRequest(req, ip);
+  const { score: baseScore, signals } = scoreRequest(req, ip);
+  let score = baseScore;
+  // CAPA 6: suma la puntuación del timing conductual (si hay datos)
+  const t = scoreTiming(ip);
+  if (t.score > 0) { score += t.score; signals.push(...t.signals); }
   const action = decide(score);
   console.log(`[${ip}] score=${score} -> ${action} (${signals.join(', ') || 'sin señales'})`);
 
